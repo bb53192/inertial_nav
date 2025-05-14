@@ -1,0 +1,50 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/*
+*.egg-info/
+
+# PyTorch model weights
+model/*.pth
+
+# Python logs and outputs
+*.log
+*.out
+
+# Dataset files
+datasets/*.csv
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# PDFs and LaTeX auxiliary files
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+*.lb
+*.bbl
+*.blg
+*.run.xml
+*.fdb_latexmk
+*.synctex.gz
+*.txt
+
+# Generated figures
+*.png
+*.pdf
+*.svg
+_old/*.png
+_old/*.pth
