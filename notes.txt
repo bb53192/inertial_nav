@@ -1,0 +1,19 @@
+naučio sam model na skupu mjerenja koji predstavlja robot koji se kreće u x smjeru konstantnom brzinom i rotira se. na temelju tog modela pokušao sam predvidjeti brzinu robota kad se kreće translacijski pod kutem 45° od smjera x i dobio netočnu predikciju. 
+RMSE vel_x: 0.3910
+RMSE vel_y: 0.6817
+RMSE vel_z: 0.0436
+
+to je bio jako dobar uvid za moje istraživanje jer sam time shvatio da model nije dovoljno utrenirann. glavno pitanje je zašto. odgovor je jednostavno u tome što je treniran na jednom tipu podataka (rotacija + sinusoidalna akceleracija), a validiran na potpuno drukčijem (konstantna brzina, bez rotacije). Time sam dokazao da moj GRU model ne generalizira dobro iz jednog stanja gibanja u drugo. 
+
+To je vrlo vrijedan uvid za daljnje istraživanje jer saznajemo da moramo trenirati model na sva moguća gibanja koja naš robot može postići. Ovaj model je bio pretreniran na specifičan uzorak. Mreža je naučila "prepoznati" sinusoidu rotacije i koristiti to kao signal. Nedostaje raznolikih uzoraka. Model nikad nije vidio konstantnu translaciju bez rotacije. kako bismo ovo riješili moramo napraviti dataset za treniranje koji će obuhvatiti sve moguće kombinacije gibanja kojima robot može manevrirati. Kao treće, nismo zadali eksplicitnu orijentaciju, nego je model samo naslućivao orijentaciju iz žiroskopa. moramo mu zadati ground truth orijentaciju kao što smo i brzinu kako bismo dobili precizniji model. 
+
+Nakon što sam u training skup dodao oba dataseta , za obje vrste gibanja i validirao ponovno na istom datasetu za translacijsko gibanje pod kutem dobio sam duplo bolje rezultate. 
+RMSE vel_x: 0.1956
+RMSE vel_y: 0.2344
+RMSE vel_z: 0.0218
+
+U skup za testiranje dodao sam složenija gibanja koja uključuju kružno gibanje stabilnom kutnom brzinom, stop-and-go gibanje u pravilnim razmacima i zigzag gibanje. Odmah u početku sam dobio značajno veći gubitak u 20 epoha što nije slutilo na dobru utreniranost modela. Naravno validacijom je potvrđeno da model nije dobro utreniran. 
+
+zaključak je da su ta gibanja računalno presložena i jako ih je teško utrenirati dobro. Model ćemo prilagoditi našem spektru gibanja koje uključuje gibanje u obliku pravokutnika i osmicu, te isto to u drugom smjeru. 
+
+Rezultat koji sam dobio predikcijom temeljenom na utreniranom GRU modelu je bio približan, ali uključuje dodatan drift koji je ispravljen EKF-om. Konačni rezultat je zadovoljavajući na ovom testnom skupu. 
